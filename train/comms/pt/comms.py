@@ -448,6 +448,7 @@ class commsCollBench(paramCommsBench):
         return results
 
     def runPt2Pt(self):
+        logger.debug("[MOD] Running runPt2Pt func")
         self.backendFuncs.complete_accel_ops(self.collectiveArgs, initOp=True)
         # warm-up
         memSize = self.backendFuncs.get_mem_size(self.collectiveArgs)
@@ -469,6 +470,7 @@ class commsCollBench(paramCommsBench):
             "avgBiBW": avgBiBW,
             "memSize": memSize,
         }
+        logger.debug("[MOD] End runPt2Pt func")
         return results
 
     def getPingLatency(self, numIters):
@@ -624,6 +626,7 @@ class commsCollBench(paramCommsBench):
         return avgBiBW
 
     def checkPt2PtRanks(self):
+        logger.debug("[MOD] Checking Pt2Pt ranks")
         # set default values
         if not self.collectiveArgs.src_ranks:
             self.collectiveArgs.src_ranks = [0]
@@ -665,8 +668,12 @@ class commsCollBench(paramCommsBench):
             print(
                 f"\t collective={self.collectiveArgs.collective}\t{self.collectiveArgs.pt2pt}, src_ranks={self.collectiveArgs.src_ranks}, dst_ranks={self.collectiveArgs.dst_ranks}"
             )
+            
+        logger.debug("[MOD] Done checking Pt2Pt ranks")
 
     def checkCollectiveRanks(self):
+        logger.debug("[MOD] Checking collective ranks")
+    
         if self.collectiveArgs.collective == "incast":
             # incast: set default value and exclude root
             if not self.collectiveArgs.src_ranks:
@@ -684,6 +691,8 @@ class commsCollBench(paramCommsBench):
             print(
                 f"\t collective={self.collectiveArgs.collective}, src_ranks={self.collectiveArgs.src_ranks}, dst_ranks={self.collectiveArgs.dst_ranks}"
             )
+        
+        logger.debug("[MOD] Done checking collective ranks")
 
     def initCollectiveArgs(self, commsParams):
         # lint was complaining that benchTime was too complex!
@@ -805,6 +814,7 @@ class commsCollBench(paramCommsBench):
         )
 
     def gatherBenchTime(self, collectiveArgs, commsParams, timeUsElapsedList):
+        logger.debug("[MOD] Running gatherBenchTime func")
         # Push the list to device, then do an all-gather.
         timeElapsedTensor = torch.tensor(
             timeUsElapsedList, device=self.backendFuncs.get_device()
@@ -829,6 +839,8 @@ class commsCollBench(paramCommsBench):
         # use allgather as all process group should support it
         self.backendFuncs.all_gather(collectiveArgs)
         self.backendFuncs.complete_accel_ops(collectiveArgs)
+        
+        logger.debug("[MOD] Done running gatherBenchTime func")
 
         return timeList
 

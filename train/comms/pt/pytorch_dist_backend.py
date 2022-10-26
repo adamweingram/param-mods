@@ -799,6 +799,8 @@ class PyTorchDistBackend(backendFunctions):
             
             # init default process group if not yet initialized or extend_distributed failed or is disabled
             dist.init_process_group(backend, rank=global_rank, world_size=world_size)
+            
+            logger.debug(f"[MOD] Done initializing CUDA device with rank: {global_rank}")
 
         self.groups = {}
 
@@ -823,8 +825,11 @@ class PyTorchDistBackend(backendFunctions):
         self.num_pgs = len(self.groups)
 
         self.round_robin_group = cycle(list(self.groups.values()))
+        
+        logger.debug(f"[MOD] done with initialize_backend")
 
     def benchmark_comms(self):
+        logger.debug(f"[MOD] Start benchmark_comms()")
         self.initialize_backend(
             self.comms_world_info.master_ip,
             self.comms_world_info.master_port,
@@ -832,6 +837,8 @@ class PyTorchDistBackend(backendFunctions):
         )
         index = 0  # used in TPU, where it is not initialized!
         self.commsParams.benchTime(index, self.commsParams, self)
+        
+        logger.debug(f"[MOD] End benchmark_comms()")
         return
 
     def __del__(self):
