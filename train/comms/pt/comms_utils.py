@@ -30,7 +30,9 @@ from torch.autograd.profiler import record_function
 
 random.seed()
 
+# Set up logger
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 default_master_ip = "127.0.0.1"
 default_master_port = "29500"
