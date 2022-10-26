@@ -693,7 +693,11 @@ class PyTorchDistBackend(backendFunctions):
             
             rank_to_set = self.get_local_rank()
             logger.debug(f"[MOD] Trying to set PyTorch CUDA device to be: {rank_to_set}")
-            torch.cuda.set_device(rank_to_set)
+            
+            try:
+                torch.cuda.set_device(rank_to_set)
+            except RuntimeError as e:
+                logger.critical(e, exc_info=True)
 
         logger.info(f"rank {self.get_global_rank()} set torch device to {dev_str}")
 
