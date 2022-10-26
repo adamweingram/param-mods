@@ -27,7 +27,9 @@ except ImportError:
     except ImportError:
         has_ext_dist = False
 
+# Set up logger
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def _downcast(input, bitwidth):
