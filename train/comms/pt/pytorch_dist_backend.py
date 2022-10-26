@@ -795,10 +795,10 @@ class PyTorchDistBackend(backendFunctions):
             self.use_ext_dist = False
 
         if not dist.is_initialized():
-            logger.debug(f"[MOD] Attempting to initialize CUDA device with rank: {global_rank} and world size: {world_size}")
+            logger.debug(f"[MOD] Attempting to initialize CUDA device with backend: {backend}, rank: {global_rank}, and world size: {world_size}")
             
             # init default process group if not yet initialized or extend_distributed failed or is disabled
-            dist.init_process_group(backend, rank=global_rank, world_size=world_size)
+            dist.init_process_group(backend=backend, rank=global_rank, world_size=world_size)
             
             logger.debug(f"[MOD] Done initializing CUDA device with rank: {global_rank}")
 
