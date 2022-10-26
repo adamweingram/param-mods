@@ -681,13 +681,17 @@ class PyTorchDistBackend(backendFunctions):
             else self.commsParams.device
         )
         if dev_str.startswith("cuda"):
+            logger.debug("[MOD] Setting current CUDA device...")
             if self.get_local_rank() > torch.cuda.device_count():
                 raise ValueError(
                     "Insufficient #GPUs: "
                     f"available {torch.cuda.device_count()} "
                     f"requested {self.get_local_rank()}"
                 )
-            torch.cuda.set_device(self.get_local_rank())
+            
+            rank_to_set = self.get_local_rank()
+            logger.debug(f"[MOD] Trying to set PyTorch CUDA device to be: {rank_to_set}")
+            torch.cuda.set_device(rank_to_set)
 
         logger.info(f"rank {self.get_global_rank()} set torch device to {dev_str}")
 
@@ -785,6 +789,8 @@ class PyTorchDistBackend(backendFunctions):
             self.use_ext_dist = False
 
         if not dist.is_initialized():
+            logger.debug(f"[MOD] Attempting to initialize CUDA device with rank: {global_rank} and world size: {world_size}")
+            
             # init default process group if not yet initialized or extend_distributed failed or is disabled
             dist.init_process_group(backend, rank=global_rank, world_size=world_size)
 

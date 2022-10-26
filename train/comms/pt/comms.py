@@ -1328,12 +1328,17 @@ class commsCollBench(paramCommsBench):
         self.backendFuncs.sync_barrier(self.collectiveArgs, "benchtime")
 
     def runBench(self, comms_world_info, commsParams):
+        logger.debug(f"[MOD] runBench function got for `comms_world_info`: {commsParams}")
+        logger.debug(f"[MOD] runBench function got for `commsParams`: {commsParams}")
+    
         # Init the desired backend
         if commsParams.nw_stack == "pytorch-dist":
+            logger.debug(f"[MOD] Will use PyTorch Distributed Backend")
             from pytorch_dist_backend import PyTorchDistBackend
 
             backendObj = PyTorchDistBackend(comms_world_info, commsParams)
         elif commsParams.nw_stack == "pytorch-xla-tpu":
+            logger.debug(f"[MOD] Will use PyTorch TPU Backend")
             from pytorch_tpu_backend import PyTorchTPUBackend
 
             backendObj = PyTorchTPUBackend(comms_world_info, commsParams)
